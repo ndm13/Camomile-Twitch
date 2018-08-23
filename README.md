@@ -28,3 +28,6 @@ option!
 - Better heuristics.
 - Some kind of autopilot that best-guesses for you (optional, of course).
 - Maybe doing the whole Windows Forms thing.
+
+## Tested games
+- Twinkle Star Sprites
