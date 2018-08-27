@@ -39,7 +39,35 @@ namespace Camomile
             }
         }
 
+        static class ExePath
+        {
+            public static string FromIconPath(string iconPath)
+            {
+                if (iconPath.EndsWith(".exe"))
+                {
+                    return iconPath;
+                }
+                return null;
+            }
 
+            public static HashSet<string> FromBasicLogic(string gameDir)
+            {
+                var all = Directory.EnumerateFiles(gameDir, "*.exe", SearchOption.AllDirectories);
+                var filtered = new HashSet<string>();
+                foreach(var exe in all)
+                {
+                    var sptl = exe.Substring(gameDir.Length).ToLower();
+                    // DirectX Setup
+                    if (sptl == "directx\\dxsetup.exe")
+                        continue;
+                    // Uninstaller - usually unins000 or uninstall
+                    if (sptl.Contains("unins"))
+                        continue;
+                    filtered.Add(exe);
+                }
+                return filtered;
+            }
+        }
 
     }
 }

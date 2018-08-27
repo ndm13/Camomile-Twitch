@@ -10,6 +10,7 @@ namespace Camomile
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             Console.WriteLine("Camomile - Taking the Edge Off of Twitch");
@@ -23,66 +24,47 @@ namespace Camomile
             {
                 try
                 {
-                    TwitchLink game = new TwitchLink(linkPath);
-
+                    var link = new TwitchLink(linkPath);
+                    Console.WriteLine("Found new game: " + link.Name);
                     Console.WriteLine("Guessing based on icon path...");
-                    string gameDir = Guess.GameDir.FromIconPath(game.IconPath, game.FuelID);
+                    string gameDir = Guess.GameDir.FromIconPath(link.IconPath, link.FuelID);
                     if(gameDir == null){
-                        // Check common game dirs
-                        var guesses = Guess.GameDir.FromTwitchHabits(game.FuelID);
-                        var dialog = new FolderBrowserDialog();
-                        switch (guesses.Count)
+                        Console.WriteLine("Guessing based on Twitch defaults...");
+                        var guesses = Guess.GameDir.FromTwitchHabits(link.FuelID).ToArray();
+                        if (guesses.Length == 1)
                         {
-                            case 0:
-                                Console.WriteLine("Game dir not found.  Please choose.");
-                                if(dialog.ShowDialog() == DialogResult.OK)
-                                {
-                                    gameDir = dialog.SelectedPath;
-                                    Console.WriteLine("Manually specified game dir: " + gameDir);
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Cancelled path selection, exiting.");
-                                    return;
-                                }
-                                break;
-                            case 1:
-                                gameDir = guesses.First();
-                                Console.WriteLine("Best guess for game dir: " + gameDir);
-                                break;
-                            default:
-                                Console.WriteLine("Found multiple options.  Please choose the one that looks \"right\".");
-                                foreach(var dir in guesses)
-                                {
-                                    dialog.SelectedPath = dir;
-                                    if(dialog.ShowDialog() == DialogResult.OK)
-                                    {
-                                        gameDir = dialog.SelectedPath;
-                                        Console.WriteLine("Chose game dir: " + gameDir);
-                                        break;
-                                    }
-                                }
-                                if(gameDir == null)
-                                {
-                                    Console.WriteLine("No acceptable options?  Choose it yourself, then!");
-                                    dialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
-                                    if(dialog.ShowDialog() == DialogResult.OK)
-                                    {
-                                        gameDir = dialog.SelectedPath;
-                                        Console.WriteLine("Chosen game dir: " + gameDir);
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("There's no pleasing some people.  C'est la vie...");
-                                        return;
-                                    }
-                                }
-                                break;
+                            gameDir = guesses[0];
+                            Console.WriteLine("Best guess for game dir: " + gameDir);
+                        }
+                        else if(guesses.Length > 1)
+                        {
+                            Console.WriteLine("Found multiple options.  Please choose the one that looks \"right\".");
+                            for (var i = 0; i < guesses.Length; i++)
+                                Console.WriteLine(i + ":\t" + guesses[i]);
+                            if (int.TryParse(Console.ReadLine(), out int choice))
+                            {
+                                gameDir = guesses[choice];
+                            }
+                        }
+                    }
+                    var folderPicker = new FolderBrowserDialog();
+                    if (gameDir == null)
+                    {
+                        Console.WriteLine("We couldn't guess which folder your game is in.  Find it for us?");
+                        folderPicker.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                        if(folderPicker.ShowDialog() == DialogResult.OK)
+                        {
+                            gameDir = folderPicker.SelectedPath;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Okay, we'll skip this game then.");
+                            continue;
                         }
                     }
                     // We have a game dir at this point; find an exe
                     string exe = null;
-                    var exes = Directory.EnumerateFiles(gameDir, "*.exe", SearchOption.AllDirectories).ToArray();
+                    var exes = Guess.ExePath.FromBasicLogic(gameDir).ToArray();
                     switch (exes.Length)
                     {
                         case 0:
@@ -112,7 +94,7 @@ namespace Camomile
                             break;
                     }
                     Console.WriteLine("Creating new link...");
-                    game.WriteStandardLink(exe, desktopDir + "\\_" + game.Name + ".lnk");
+                    link.WriteStandardLink(exe, desktopDir + "\\_" + link.Name + ".lnk");
                     Console.WriteLine("Done!");
                 }
                 catch (ArgumentException e)
