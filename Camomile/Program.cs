@@ -26,6 +26,7 @@ namespace Camomile
                 {
                     var link = new TwitchLink(linkPath);
                     Console.WriteLine("Found new game: " + link.Name);
+                    Console.WriteLine("Guessing game dir...");
                     Console.WriteLine("Guessing based on icon path...");
                     string gameDir = Guess.GameDir.FromIconPath(link.IconPath, link.FuelID);
                     if(gameDir == null){
@@ -34,7 +35,6 @@ namespace Camomile
                         if (guesses.Length == 1)
                         {
                             gameDir = guesses[0];
-                            Console.WriteLine("Best guess for game dir: " + gameDir);
                         }
                         else if(guesses.Length > 1)
                         {
@@ -80,8 +80,12 @@ namespace Camomile
                             {
                                 Console.WriteLine(i + ":\t" + exes[i]);
                             }
-                            int choice = -1;
-                            if (Int32.TryParse(Console.ReadLine(), out choice))
+
+                            var iconGuess = Guess.ExePath.FromIconPath(link.IconPath);
+                            if (iconGuess != null)
+                                Console.WriteLine("Note: Icon guess is " + iconGuess);
+
+                            if (int.TryParse(Console.ReadLine(), out int choice))
                             {
                                 exe = exes[choice];
                                 Console.WriteLine("Chosen exe: " + exe);
@@ -89,7 +93,7 @@ namespace Camomile
                             else
                             {
                                 Console.WriteLine("Never mind, then.");
-                                return;
+                                continue;
                             }
                             break;
                     }
