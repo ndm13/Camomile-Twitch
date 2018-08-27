@@ -31,3 +31,4 @@ option!
 
 ## Tested games
 - Twinkle Star Sprites
+- Tokyo 42 Complete
