@@ -15,7 +15,13 @@ Twitch links, it looks for the folder that the game is stored in,
 using the icon path first and then all the places Twitch Desktop
 tries to shove your games by default.
 
-Then the program looks for the EXE, which is the annoying part.
+In the latest version, we utilize `fuel.json` v2, which is the
+current version of the format, to find the EXE of the game to link.
+If anyone has any examples of other `fuel.json` versions, let me
+know and I'll try to add a parser.  This can relilably find the EXE
+for the game, at least the one that Twitch launcher uses.
+
+If the game doesn't have a `fuel.json`, we have to hunt for the EXE.
 Because Twitch's games don't reliably have the same EXE path, and
 we can't reliably guess from the icon path, we have to ask what
 looks "right".  Don't worry if you get it wrong; the original link
@@ -32,3 +38,4 @@ option!
 ## Tested games
 - Twinkle Star Sprites
 - Tokyo 42 Complete
+- >observer_ (as of 0.7)
