@@ -1,9 +1,6 @@
-﻿using IWshRuntimeLibrary;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Camomile
@@ -15,7 +12,7 @@ namespace Camomile
         {
             Console.WriteLine("Camomile - Taking the Edge Off of Twitch");
             Console.WriteLine("========================================");
-            Console.WriteLine("Ver.0.7");
+            Console.WriteLine("Ver.0.8");
             Console.WriteLine();
 
             Console.WriteLine("Checking for Twitch links...");
@@ -63,9 +60,11 @@ namespace Camomile
                         }
                     }
                     // We have a game dir at this point; find an exe
+                    Console.WriteLine("Guessing exe path from fuel.json...");
                     var exe = Guess.ExePath.FromFuelJson(gameDir);
                     if (exe == null)
                     {
+                        Console.WriteLine("Guessing exe path from Twitch defaults...");
                         var exes = Guess.ExePath.FromBasicLogic(gameDir).ToArray();
                         switch (exes.Length)
                         {
@@ -74,7 +73,6 @@ namespace Camomile
                                 return;
                             case 1:
                                 exe = exes[0];
-                                Console.WriteLine("Found exe: " + exe);
                                 break;
                             default:
                                 Console.WriteLine("Found some options:");
@@ -90,7 +88,6 @@ namespace Camomile
                                 if (int.TryParse(Console.ReadLine(), out int choice))
                                 {
                                     exe = exes[choice];
-                                    Console.WriteLine("Chosen exe: " + exe);
                                 }
                                 else
                                 {
@@ -100,10 +97,7 @@ namespace Camomile
                                 break;
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("Found exe (fuel.json): " + exe);
-                    }
+                    Console.WriteLine("Found exe: " + exe);
                     Console.WriteLine("Creating new link...");
                     link.WriteStandardLink(exe, desktopDir + "\\_" + link.Name + ".lnk");
                     Console.WriteLine("Done!");
