@@ -38,4 +38,4 @@ option!
 ## Tested games
 - Twinkle Star Sprites
 - Tokyo 42 Complete
-- >observer_ (as of 0.7)
+- &gt;observer_ (as of 0.7)
