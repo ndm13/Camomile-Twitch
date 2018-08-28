@@ -15,7 +15,7 @@ Twitch links, it looks for the folder that the game is stored in,
 using the icon path first and then all the places Twitch Desktop
 tries to shove your games by default.
 
-In the latest version, we utilize `fuel.json` v2, which is the
+Starting in version 0.7, we utilize `fuel.json` v2, which is the
 current version of the format, to find the EXE of the game to link.
 If anyone has any examples of other `fuel.json` versions, let me
 know and I'll try to add a parser.  This can relilably find the EXE
