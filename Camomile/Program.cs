@@ -15,7 +15,7 @@ namespace Camomile
         {
             Console.WriteLine("Camomile - Taking the Edge Off of Twitch");
             Console.WriteLine("========================================");
-            Console.WriteLine("Ver.0.5");
+            Console.WriteLine("Ver.0.7");
             Console.WriteLine();
 
             Console.WriteLine("Checking for Twitch links...");
@@ -63,39 +63,46 @@ namespace Camomile
                         }
                     }
                     // We have a game dir at this point; find an exe
-                    string exe = null;
-                    var exes = Guess.ExePath.FromBasicLogic(gameDir).ToArray();
-                    switch (exes.Length)
+                    var exe = Guess.ExePath.FromFuelJson(gameDir);
+                    if (exe == null)
                     {
-                        case 0:
-                            Console.WriteLine("No exes found!  Sorry, buddy.");
-                            return;
-                        case 1:
-                            exe = exes[0];
-                            Console.WriteLine("Found exe: " + exe);
-                            break;
-                        default:
-                            Console.WriteLine("Found some options:");
-                            for(var i = 0; i < exes.Length; i++)
-                            {
-                                Console.WriteLine(i + ":\t" + exes[i]);
-                            }
+                        var exes = Guess.ExePath.FromBasicLogic(gameDir).ToArray();
+                        switch (exes.Length)
+                        {
+                            case 0:
+                                Console.WriteLine("No exes found!  Sorry, buddy.");
+                                return;
+                            case 1:
+                                exe = exes[0];
+                                Console.WriteLine("Found exe: " + exe);
+                                break;
+                            default:
+                                Console.WriteLine("Found some options:");
+                                for (var i = 0; i < exes.Length; i++)
+                                {
+                                    Console.WriteLine(i + ":\t" + exes[i]);
+                                }
 
-                            var iconGuess = Guess.ExePath.FromIconPath(link.IconPath);
-                            if (iconGuess != null)
-                                Console.WriteLine("Note: Icon guess is " + iconGuess);
+                                var iconGuess = Guess.ExePath.FromIconPath(link.IconPath);
+                                if (iconGuess != null)
+                                    Console.WriteLine("Note: Icon guess is " + iconGuess);
 
-                            if (int.TryParse(Console.ReadLine(), out int choice))
-                            {
-                                exe = exes[choice];
-                                Console.WriteLine("Chosen exe: " + exe);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Never mind, then.");
-                                continue;
-                            }
-                            break;
+                                if (int.TryParse(Console.ReadLine(), out int choice))
+                                {
+                                    exe = exes[choice];
+                                    Console.WriteLine("Chosen exe: " + exe);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Never mind, then.");
+                                    continue;
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Found exe (fuel.json): " + exe);
                     }
                     Console.WriteLine("Creating new link...");
                     link.WriteStandardLink(exe, desktopDir + "\\_" + link.Name + ".lnk");

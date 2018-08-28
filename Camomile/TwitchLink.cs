@@ -83,9 +83,10 @@ namespace Camomile
         public void WriteStandardLink(string exePath, string linkPath)
         {
             var shell = new WshShell();
-            var shortcut = shell.CreateShortcut(linkPath);
+            WshShortcut shortcut = shell.CreateShortcut(linkPath);
             shortcut.Description = Name;
             shortcut.TargetPath = exePath;
+            shortcut.RelativePath = exePath.Substring(0, exePath.LastIndexOf('\\'));
             if (IconPath != null)
             {
                 shortcut.IconLocation = IconPath + ',' + IconID;

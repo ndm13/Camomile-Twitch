@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -64,7 +67,23 @@ namespace Camomile
         {
             public static string FromFuelJson(string gameDir)
             {
-                throw new NotImplementedException();    //TODO
+                if(!File.Exists(gameDir + "fuel.json"))
+                {
+                    return null;
+                }
+                var json = JObject.Parse(File.ReadAllText(gameDir + "fuel.json"));
+                try
+                {
+                    if (json.Value<string>("SchemaVersion") == "2")
+                    {
+                        if (json.TryGetValue("Main", out JToken main) && (main as JObject).ContainsKey("Command"))
+                        {
+                            return gameDir + main.Value<string>("Command");
+                        }
+                    }
+                }
+                catch { }
+                return null;
             }
 
             /// <summary>
