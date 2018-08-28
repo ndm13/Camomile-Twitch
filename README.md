@@ -36,6 +36,8 @@ option!
 - Maybe doing the whole Windows Forms thing.
 
 ## Tested games
+- &gt;observer_
+- Clustertruck
+- Death Squared
+- Tokyo 42 Complete Edition
 - Twinkle Star Sprites
-- Tokyo 42 Complete
-- &gt;observer_ (as of 0.7)
