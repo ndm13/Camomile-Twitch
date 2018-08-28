@@ -86,7 +86,7 @@ namespace Camomile
             WshShortcut shortcut = shell.CreateShortcut(linkPath);
             shortcut.Description = Name;
             shortcut.TargetPath = exePath;
-            shortcut.RelativePath = exePath.Substring(0, exePath.LastIndexOf('\\'));
+            shortcut.WorkingDirectory = exePath.Substring(0, exePath.LastIndexOf('\\') + 1);
             if (IconPath != null)
             {
                 shortcut.IconLocation = IconPath + ',' + IconID;
