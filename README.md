@@ -1,3 +1,10 @@
+# This repository is being archived
+Twitch Prime is now Amazon Gaming.  Fuel links are dead.  We live
+in the future.  This project has outlived its usefulness and will
+be archived.
+
+---
+
 Okay, so Twitch feels like giving away free games to Twitch Prime
 members, which is cool.  But when you click on the helpful links it
 creates, it forces the Twitch Desktop app to open and launch the
